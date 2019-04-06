@@ -53,23 +53,23 @@ function build_game(t, d){
         return true;
     };
     let maze = build_maze(t, d, calc_threshold(t, d));
-    let initial = new Array(d);
+    let position = new Array(d);
     let goal = new Array(d);
     var i;
     do {
         for (i = 0; i < d; ++i) {
-            initial[i] = Math.floor(t * Math.random());
+            position[i] = Math.floor(t * Math.random());
             goal[i] = Math.floor(t * Math.random());
         }
-    } while (get_value(maze, initial) === 1 ||
+    } while (get_value(maze, position) === 1 ||
              get_value(maze, goal) === 1 ||
-             are_equal_arrays(initial, goal));
+             are_equal_arrays(position, goal));
 
     return {
         't': t,
         'd': d,
         'maze': maze,
-        'initial': initial,
+        'position': position,
         'goal': goal
     }
 }
