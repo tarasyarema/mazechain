@@ -8,7 +8,7 @@
             }
             body {
                 background-color: darkred;
-                background-image: url("assets/magma.png");
+                background-image: url("https://github.com/tarasyarema/mazechain/blob/master/assets/magma.png?raw=true");
                 background-repeat: repeat;
                 min-height: 100%;
                 margin: 0;
@@ -27,7 +27,7 @@
                 background-color: white;
             }
             button {
-                width: 20%;
+                width: 30%;
                 height: 1.5em;
                 background-color: grey;
                 font: 32px "Courier New";
@@ -46,6 +46,7 @@
         <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
         <script>
             $(function () {
+                $('#screen02').hide();
                 var socket = io();
                 socket.on('setId', function(id) {
                     console.log(`setId: ${id}`);
@@ -56,6 +57,8 @@
                     const name = $('#name').val();
                     console.log(name);
                     socket.emit('setName', name);
+                    $('#screen01').hide();
+                    $('#screen02').show();
                 });
             });
         </script>
@@ -66,7 +69,7 @@
             <input id="name" type="text" placeholder="nickname">
             <button id="submit">Submit</button>
         </div>
-        <div id="screen02" class="container" hidden>
+        <div id="screen02" class="container">
             <p class="title">M a z e C h a i n</p>
             <p class="info">Join or Create a new game</p>
             <input id="game_id" type="text" placeholder="game id">

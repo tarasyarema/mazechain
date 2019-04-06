@@ -3,10 +3,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
-var template_dir = __dirname;
-
 app.get('/', function(req, res){
-    res.sendFile(template_dir + '/index.html');
+    res.sendFile(__dirname + '/index.html');
 });
 
 function randomId(checkList) {
@@ -28,16 +26,13 @@ io.on('connection', function(socket) {
         _id: userId,
         socket: socket,
     };
-    io.emit('setId', userId);
+    socket.emit('setId', userId);
 
     socket.on('disconnect', function() {
         console.log('disconnect');
-        let index = delete userId[userId];
-        if (index > -1) {
-            users.splice(index, 1);
-        }
+        delete userId[userId];
         if (gameId) {
-            index = games[gameId].indexOf(gameId);
+            const index = games[gameId].indexOf(gameId);
             if (index > -1) {
                 games.splice(index, 1);
             }
