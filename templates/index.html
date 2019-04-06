@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+    <title>Socket.IO chat</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font: 13px Helvetica, Arial; }
+        form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+        form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+        form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages li { padding: 5px 10px; }
+        #messages li:nth-child(odd) { background: #eee; }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+        $(function () {
+            var socket = io();
+
+            socket.on("game", function(payload){
+                $('#messages').append($('<li>').text('game payload: ' + payload));
+            })
+
+            /*socket.on("rooms", function(lst){
+                $('#messages').append($('<li>').text('Available rooms: ' + lst.join(', ')));
+                $('#form_name').css("display", "block").submit(function(e){
+                    e.preventDefault(); // prevents page reloading
+                    socket.emit('name', $('#name').val());
+                    return false;
+                });
+            });
+
+
+            socket.on('lobby', function(msg){
+                $('#messages').append($('<li>').text(msg));
+            });*/
+        });
+    </script>
+</head>
+<body>
+<ul id="messages"></ul>
+<!--<form id="form_name" action="">
+    <input id="name" autocomplete="off" /><button>Join</button>
+</form>-->
+</body>
+</html>
