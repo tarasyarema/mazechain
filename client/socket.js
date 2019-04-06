@@ -41,7 +41,7 @@ $(function () {
     }
   });
 
-  socket.on('new message', function(msg){
+  socket.on('new info', function(msg){
     $('#position').text(`Current overall position: (${level.overall.player})`);
   });
 });

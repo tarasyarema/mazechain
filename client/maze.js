@@ -8,12 +8,12 @@ let level = {
                     ],
     position:       [ 0, 0 ],
     goal: {
-      position:     [ 0, 1 ],
-      sameDim:      false,
+      position:     [ 1, 1 ],
+      same_proj:    false
     },
     overall: {
       player:       [ 0, 0, 0 ],
-      goal:         [ 0, 1, 2 ]
+      goal:         [ 1, 1, 2 ]
     },
     coordinates:    [ 0, 1 ]
 }
