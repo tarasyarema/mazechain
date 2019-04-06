@@ -160,7 +160,7 @@ function newInfo(user, game) {
         position: [position[dim_x], position[dim_y]],
         goal: {
             position: [goal[dim_x], goal[dim_y]],
-            sameDim: isOnSameProjection(position, goal, dim_x, dim_y)
+            same_proj: isOnSameProjection(position, goal, dim_x, dim_y)
         },
         overall: {
             player: position,
