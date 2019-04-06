@@ -1,33 +1,47 @@
 const connection = 'http://localhost:3000/';
+const messages = [
+  'left',
+  'up',
+  'right',
+  'down'
+];
 
 $(function () {
-  var socket = io(connection);
-  console.log(user.position);
+  let socket = io(connection);
+  let mov, message;
+  $('body').append(`<p>Goal: (${level.overall.goal})</p>`);
+  $('#position').text(`Current overall position: (${level.overall.player})`);
+
   $("body").keypress(function(event) {
-    console.log(event.which);
+    mov = [0, 0];
+
     switch(event.which) {
       case 97:
-        --user.position[0];
-        socket.emit('left');
+        mov = [-1, 0];
+        message = 0;
         break;
       case 119:
-        --user.position[1];
-        socket.emit('up');
+        mov = [0, -1];
+        message = 1;
         break;
       case 100:
-        ++user.position[0];
-        socket.emit('right');
+        mov = [1, 0];
+        message = 2;
         break;
       case 115:
-        ++user.position[1];
-        socket.emit('down');
+        mov = [0, 1];
+        message = 3;
         break;
     }
-    return false;
+
+    if (can_move(level.position, mov, level.map)) {
+      socket.emit(messages[message]);
+      level.position = vec_sum(level.position, mov);
+      vec_sum_coord(level.coordinates, level.overall.player, mov);
+    }
   });
 
   socket.on('new message', function(msg){
-    level = msg;
-    $('#position').text(msg);
+    $('#position').text(`Current overall position: (${level.overall.player})`);
   });
 });
