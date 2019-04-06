@@ -8,7 +8,7 @@
             }
             body {
                 background-color: darkred;
-                background-image: url("https://github.com/tarasyarema/mazechain/blob/master/static/img/out_small.jpeg?raw=true");
+                background-image: "img/out_small.jpeg";
                 background-repeat: repeat;
                 min-height: 100%;
                 margin: 0;
@@ -44,7 +44,9 @@
         </style>
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script src="maze.js"></script>
         <script>
+            // url("https://github.com/tarasyarema/mazechain/blob/master/img/out_small.jpeg?raw=true");
             $(function () {
                 $('#screen02').hide();
                 var socket = io();
@@ -76,5 +78,14 @@
             <button id="join">Join</button>
             <button id="create">Create new game</button>
         </div>
+
+        <div id="game" class="container">
+            <canvas id="canvas" width="500px" height="500px"></canvas>
+            <p id="position"></p>
+        </div>
+
+        <script src="logic.js"></script>
+        <script src="game.js"></script>
+        <script src="socket.js"></script>
     </body>
 </html>

@@ -1,11 +1,15 @@
-var app = require('express')();
+var express = require('express');
+const app = express();
 var http = require('http').Server(app);
+var path = require('path');
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
-app.get('/', function(req, res){
-    res.sendFile(__dirname + '/static/index.html');
-});
+app.use(express.static(path.join(__dirname, 'static')));
+
+// app.get('/', function(req, res){
+//     res.sendFile('index.html');
+// });
 
 function randomId(checkList) {
     let newId = 0;
