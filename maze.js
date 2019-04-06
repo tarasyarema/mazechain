@@ -26,7 +26,7 @@ function get_value(maze, pos){
 function get_projection(maze, pos, dim_x, dim_y) {
     let t = maze.length;
     let matrix = new Array(t);
-    let new_pos = pos;
+    let new_pos = pos.slice();
     for (let i = 0; i < t; ++i) {
         new_pos[dim_x] = i;
         matrix[i] = new Array(t);
