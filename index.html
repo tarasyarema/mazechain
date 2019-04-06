@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+    <head>
+        <title>MazeChain</title>
+        <style>
+            html {
+                height: 100%;
+            }
+            body {
+                background-color: darkred;
+                background-image: url("assets/magma.png");
+                background-repeat: repeat;
+                min-height: 100%;
+                margin: 0;
+            }
+            .container {
+                height: 100vh;
+                background-color: rgba(0, 0, 0, 0.25);
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                flex-direction: column;
+            }
+            input {
+                width: 30%;
+                height: 2em;
+                background-color: white;
+            }
+            button {
+                width: 20%;
+                height: 1.5em;
+                background-color: grey;
+                font: 32px "Courier New";
+                color: darkred;
+            }
+            .title {
+                font: 64px "Courier New";
+                color: white;
+            }
+            .info {
+                font: 48px "Courier New";
+                color: white;
+            }
+        </style>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+        <script>
+            $(function () {
+                var socket = io();
+                socket.on('setId', function(id) {
+                    console.log(`setId: ${id}`);
+                    document.cookie = `${id}`;
+                });
+
+                $('#submit').click(function () {
+                    const name = $('#name').val();
+                    console.log(name);
+                    socket.emit('setName', name);
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div id="screen01" class="container">
+            <p class="title">M a z e C h a i n</p>
+            <input id="name" type="text" placeholder="nickname">
+            <button id="submit">Submit</button>
+        </div>
+        <div id="screen02" class="container" hidden>
+            <p class="title">M a z e C h a i n</p>
+            <p class="info">Join or Create a new game</p>
+            <input id="game_id" type="text" placeholder="game id">
+            <button id="join">Join</button>
+            <button id="create">Create new game</button>
+        </div>
+    </body>
+</html>
