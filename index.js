@@ -104,7 +104,7 @@ io.on('connection', function(socket) {
 
     socket.on('startGame', function() {
         const D_dimensions = games[gameId].playersIds.length + 1;
-        games[gameId].game = maze.build_game(10, D_dimensions);
+        games[gameId].game = maze.build_game(9, D_dimensions);
         let dim = 0;
         for (let index in games[gameId].playersIds) {
             const gameUserId = games[gameId].playersIds[index];
