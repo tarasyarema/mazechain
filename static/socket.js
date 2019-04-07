@@ -87,46 +87,45 @@ $(function () {
     socket.emit('startGame');
     $('#room').hide();
     $('#game').show();
+
+    let mov, message;
+
+    $('#game').append(`<p>Goal: (${level.overall.goal})</p>`);
+    $('#position').text(`Current overall position: (${level.overall.player})`);
+
+    $('body').keypress(function(event) {
+      mov = [0, 0];
+
+      switch(event.which) {
+        case 97:
+          mov = [-1, 0];
+          message = 0;
+          break;
+        case 119:
+          mov = [0, -1];
+          message = 1;
+          break;
+        case 100:
+          mov = [1, 0];
+          message = 2;
+          break;
+        case 115:
+          mov = [0, 1];
+          message = 3;
+          break;
+      }
+
+      if (can_move(level.position, mov, level.map)) {
+        socket.emit('movement', mov);
+        level.position = vec_sum(level.position, mov);
+        vec_sum_coord(level.coordinates, level.overall.player, mov);
+      }
+    });
   });
 
-
-  // Game
-
-  let mov, message;
-
-  $('#game').append(`<p>Goal: (${level.overall.goal})</p>`);
-  $('#position').text(`Current overall position: (${level.overall.player})`);
-
-  $('#game').keypress(function(event) {
-    mov = [0, 0];
-
-    switch(event.which) {
-      case 97:
-        mov = [-1, 0];
-        message = 0;
-        break;
-      case 119:
-        mov = [0, -1];
-        message = 1;
-        break;
-      case 100:
-        mov = [1, 0];
-        message = 2;
-        break;
-      case 115:
-        mov = [0, 1];
-        message = 3;
-        break;
-    }
-
-    if (can_move(level.position, mov, level.map)) {
-      socket.emit(messages[message]);
-      level.position = vec_sum(level.position, mov);
-      vec_sum_coord(level.coordinates, level.overall.player, mov);
-    }
-  });
 
   socket.on('new info', function(msg){
+    console.log(`New info: ${msg}`);
     $('#position').text(`Current overall position: (${level.overall.player})`);
   });
 });
