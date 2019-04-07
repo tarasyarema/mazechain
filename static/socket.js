@@ -109,20 +109,17 @@ $(function () {
 
       if (can_move(level.position, mov, level.map)) {
         socket.emit('movement', mov);
-        // level.position = vec_sum(level.position, mov);
-        // vec_sum_coord(level.coordinates, level.overall.player, mov);
       }
     });
 
     console.log('Game has started!');
     draw();
-    //$('#position').text(`Current overall position: (${level.overall.player})`);
+    $('#position').text(`Current overall position: (${level.overall.player})`);
   })
 
   socket.on('gameUpdated', function(updatedGame){
     init(updatedGame);
-    console.log('game update");
-    draw();
-    //$('#position').text(`Current overall position: (${level.overall.player})`);
+    console.log('game update');
+    $('#position').text(`Current overall position: (${level.overall.player})`);
   });
 });
