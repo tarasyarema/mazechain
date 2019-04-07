@@ -109,14 +109,9 @@ $(function () {
 
     console.log('Game has started!');
     draw();
-<<<<<<< HEAD
     $('#local').text(`Local: (${level.position})`);
     $('#position').text(`Position: (${level.overall.player})`);
-  })
-=======
-    $('#position').text(`Current overall position: (${level.overall.player})`);
   });
->>>>>>> 621ce1314cc684b188754b581d3b76a8f85e7f4e
 
   socket.on('gameUpdated', function(updatedGame){
     init(updatedGame);
