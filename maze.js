@@ -1,3 +1,5 @@
+var generator = require("./generator");
+
 function build_maze(t, d, threshold){
     let rec = function(pos){
         if (pos === d) {
@@ -39,7 +41,7 @@ function get_projection(maze, pos, dim_x, dim_y) {
 }
 
 function calc_threshold(t, d){
-    return 0.75;
+    return 0.5;
 }
 
 function build_game(t, d){
@@ -52,7 +54,7 @@ function build_game(t, d){
         }
         return true;
     };
-    let maze = build_maze(t, d, calc_threshold(t, d));
+    let maze = generator.createMaze(t, d); //build_maze(t, d, calc_threshold(t, d));
     let position = new Array(d);
     let goal = new Array(d);
     var i;
