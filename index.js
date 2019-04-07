@@ -125,7 +125,15 @@ io.on('connection', function(socket) {
     });
 
     socket.on('movement', function(movement){
-        makeMovementAndNewInfo(users[userId], games[gameId], movement);
+        console.log(`index.js games: ${games}`); 
+        for (var key in games) {
+            if (games.hasOwnProperty(key)) {
+                console.log(key + " -> " + games[key]);
+            }
+        }
+        
+
+        makeMovementAndNewInfo(users[userId], games[gameId].game, movement);
     });
 
 });
@@ -134,6 +142,7 @@ function makeMovementAndNewInfo(user, game, movement) {
     let dim_x = user.dim_x;
     let dim_y = user.dim_y;
 
+    console.log(game);
     game.position[dim_x] += movement[0];
     game.position[dim_y] += movement[1];
 

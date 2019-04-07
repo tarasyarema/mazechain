@@ -1,17 +1,10 @@
-const messages = [
-  'left',
-  'up',
-  'right',
-  'down'
-];
-
 $(function () {
   $('#makeGame').hide();
   $('#room').hide();
   $('#game').hide();
 
   var socket = io();
-
+  let level;
 
   // Listeners
 
@@ -88,34 +81,32 @@ $(function () {
     $('#room').hide();
     $('#game').show();
 
-    let mov, message;
-
-    $('#game').append(`<p>Goal: (${level.overall.goal})</p>`);
-    $('#position').text(`Current overall position: (${level.overall.player})`);
+    // if (level != undefined) {
+    //   $('#game').append(`<p class="position">Goal: <b>(${level.overall.goal})</b></p>`);
+    //   $('#position').text(`Current overall position: <b>(${level.overall.player})</b>`);
+    // }
 
     $('body').keypress(function(event) {
-      mov = [0, 0];
+      let mov = [0, 0];
 
       switch(event.which) {
         case 97:
           mov = [-1, 0];
-          message = 0;
           break;
         case 119:
           mov = [0, -1];
-          message = 1;
-          break;
+          break
         case 100:
           mov = [1, 0];
-          message = 2;
           break;
         case 115:
           mov = [0, 1];
-          message = 3;
           break;
       }
-
+      
+      // if (level != undefined)
       if (can_move(level.position, mov, level.map)) {
+        console.log(`Socket.js: ${mov}`);
         socket.emit('movement', mov);
         level.position = vec_sum(level.position, mov);
         vec_sum_coord(level.coordinates, level.overall.player, mov);
@@ -123,9 +114,11 @@ $(function () {
     });
   });
 
-
   socket.on('new info', function(msg){
-    console.log(`New info: ${msg}`);
+    console.log('New info:');
+    level = msg;
+    console.log(level);
+    init(level);
     $('#position').text(`Current overall position: (${level.overall.player})`);
   });
 });

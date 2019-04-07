@@ -1,9 +1,8 @@
 const canvas    = document.getElementById('canvas');
 const context   = canvas.getContext('2d');
 
-let view        = level.map;
-let size_width  = canvas.width  / level.blocks;
-let size_height = canvas.height / level.blocks;
+var size_width = 0;
+var size_height = 0;
 
 function draw() {
     // Clear the canvas before redrawing
@@ -54,12 +53,17 @@ function draw() {
     // context.fillRect(level.position[0] * size_width, level.position[1] * size_height, size_width, size_height);
 }
 
+var now, delta;
+var then            = Date.now();
+const fps           = 60;
+const interval      = 1000 / fps;
 
-let now;
-let delta;
-let fps         = 60;
-let then        = Date.now();
-let interval    = 1000 / fps;
+function init(lvl) {
+    level = lvl;
+    size_width    = canvas.width  / level.blocks;
+    size_height   = canvas.height / level.blocks;
+    loop();
+}
 
 function loop() {
     requestAnimationFrame(loop);
@@ -72,6 +76,3 @@ function loop() {
         draw();
     }
 }
-
-loop();
-
