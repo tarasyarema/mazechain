@@ -74,10 +74,4 @@ function build_game(t, d){
     }
 }
 
-// let t0 = 4;
-// let d0 = 3;
-// game = build_game(t0, d0);
-// console.log(game);
-// console.log(game.maze);
-
-export default { build_game, get_projection }
+module.exports = { build_game, get_projection };

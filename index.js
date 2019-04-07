@@ -118,7 +118,7 @@ io.on('connection', function(socket) {
             let gameUser = users[gameUserId];
 
             let userSocket = gameUser.socket;
-            let userInfo = newInfo(gameUser, game);
+            let userInfo = newInfo(gameUser, games[gameId].game);
             userSocket.emit('new info', userInfo);
             ++dim;
         }
@@ -161,8 +161,8 @@ function makeMovementAndNewInfo(user, game, movement) {
         game.position[dim_y] -= 1;
     }
 
-    for (let userId in game.playersIds) {
-        let user = users[userId];
+    for (let index in game.playersIds) {
+        let user = users[game.playersIds[index]];
         let userSocket = user.socket;
         let userInfo = newInfo(user, game);
         userSocket.emit('new info', userInfo);
@@ -172,14 +172,13 @@ function makeMovementAndNewInfo(user, game, movement) {
 function newInfo(user, game) {
     let dim_x = user.dim_x;
     let dim_y = user.dim_y;
-    let maze = game.maze;
     let position = game.position;
     let goal = game.goal;
 
     return {
         blocks: game.t,
         dimensions: game.d,
-        map: maze.get_projection(maze, position, dim_x, dim_y),
+        map: maze.get_projection(game.maze, position, dim_x, dim_y),
         position: [position[dim_x], position[dim_y]],
         goal: {
             position: [goal[dim_x], goal[dim_y]],
