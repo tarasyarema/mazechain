@@ -137,12 +137,22 @@ function makeMovementAndNewInfo(user, game, movement) {
     game.game.position[dim_x] += movement[0];
     game.game.position[dim_y] += movement[1];
 
+    let emission = finalPosition(game.game.position, game.game.goal);
+
     for (let index in game.playersIds) {
         let user = users[game.playersIds[index]];
         let userSocket = user.socket;
         let userInfo = newInfo(user, game.game);
         userSocket.emit('gameUpdated', userInfo);
+        if (emission) userSocket.emit('finalPosition');
     }
+}
+
+function finalPosition(position, goal) {
+    for (let i = 0; i < position.length; ++i) {
+        if (position[i] !== goal[i]) return false;
+    }
+    return true;
 }
 
 function newInfo(user, game) {

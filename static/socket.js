@@ -122,4 +122,9 @@ $(function () {
     console.log('game update');
     $('#position').text(`Current overall position: (${level.overall.player})`);
   });
+
+  socket.on('finalPosition', function() {
+    setTimeout(window.alert("Congratulations"), 100000);
+    window.href = "/";
+  });
 });
