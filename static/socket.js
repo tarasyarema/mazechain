@@ -68,25 +68,20 @@ $(function () {
   });
 
   $('#leave').click(function () {
-    socket.emit('exitGame');
-    $('#collaborators_list').empty();
-    $('#room').hide();
-    $('#makeGame').show();
-
+    window.location.href = '/';
   });
 
   $('#start').click(function () {
     socket.emit('startGame');
-
-    // if (level != undefined) {
-    //   $('#game').append(`<p class="position">Goal: <b>(${level.overall.goal})</b></p>`);
-    //   $('#position').text(`Current overall position: <b>(${level.overall.player})</b>`);
-    // }
   });
 
   socket.on('gameStarted', function(initialGame){
     $('#room').hide()
     $('#game').show();
+
+    $('#goal')    .text(`Goal: (${initialGame.overall.goal})`);
+    $('#local')   .text(`Local: (${initialGame.position})`);
+    $('#position').text(`Position: (${initialGame.overall.player})`);
 
     init(initialGame);
     $('body').keypress(function(event) {
@@ -114,17 +109,27 @@ $(function () {
 
     console.log('Game has started!');
     draw();
-    $('#position').text(`Current overall position: (${level.overall.player})`);
+    $('#local').text(`Local: (${level.position})`);
+    $('#position').text(`Position: (${level.overall.player})`);
   })
 
   socket.on('gameUpdated', function(updatedGame){
     init(updatedGame);
     console.log('game update');
-    $('#position').text(`Current overall position: (${level.overall.player})`);
+    $('#local').text(`Local: (${level.position})`);
+    $('#position').text(`Position: (${level.overall.player})`);
   });
 
   socket.on('finalPosition', function() {
-    setTimeout(window.alert("Congratulations"), 100000);
-    window.href = "/";
+    setTimeout( () => {
+      alert("Congratulations!")
+    }, 1000);
+    window.location.href = "/";
+  });
+
+  socket.on('disconnected', function() {
+    console.log('Socket close.');
+    socket.disconnect(true);
+    window.location.href = "/";
   });
 });

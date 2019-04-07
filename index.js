@@ -22,7 +22,7 @@ let games = {};
 io.on('connection', function(socket) {
     console.log(socket.id);
     const userId = randomId(users);
-    let gameId = 0;
+    let gameId;
     users[userId] = {
         _id: userId,
         socket: socket,
@@ -31,12 +31,21 @@ io.on('connection', function(socket) {
 
     socket.on('disconnect', function() {
         console.log('disconnect');
-        delete userId[userId];
-        if (gameId) {
-            const index = games[gameId].indexOf(gameId);
-            if (index > -1) {
-                games.splice(index, 1);
+        console.log(`User ${userId} disconnected.`);
+        delete users[userId];
+        console.log(games, gameId);
+        if (gameId != undefined && gameId in games) {
+            for (let index in games[gameId].playersIds) {
+                let uid = games[gameId].playersIds[index];
+                if (userId !== uid){
+                    let user = users[uid];
+                    let userSocket = user.socket;
+                    console.log(`Sending disconnected emit to ${userSocket}.`);
+                    userSocket.emit('disconnected', userId);
+                }
             }
+            delete games[gameId];
+            gameId = undefined;
         }
     });
 

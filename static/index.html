@@ -33,6 +33,13 @@
                 font: 32px "Courier New";
                 color: darkred;
             }
+            .position {
+                text-align: center;
+                width: 30%;
+                background-color: grey;
+                font: 24px "Courier New";
+                color: rgb(70, 0, 0);
+            }
             .title {
                 font: 64px "Courier New";
                 color: white;
@@ -75,6 +82,8 @@
         <div id="game" class="container">
             <canvas id="canvas" width="500px" height="500px"></canvas>
             <p id="position" class="position"></p>
+            <p id="local" class="position"></p>
+            <p id="goal" class="position"></p>
         </div>
 
         <script src="logic.js"></script>
