@@ -124,23 +124,9 @@ io.on('connection', function(socket) {
         }
     });
 
-    socket.on('left', function() {
-        makeMovementAndNewInfo(users[userId], games[gameId], 'left');
+    socket.on('movement', function(movement){
+        makeMovementAndNewInfo(users[userId], games[gameId], movement);
     });
-    socket.on('right', function () {
-        makeMovementAndNewInfo(users[userId], games[gameId], 'right');
-    });
-    socket.on('up', function() {
-        makeMovementAndNewInfo(users[userId], games[gameId], 'up');
-    });
-    socket.on('down', function () {
-        makeMovementAndNewInfo(users[userId], games[gameId], 'down');
-    });
-
-});
-
-io.on('connection', function(socket) {
-
 
 });
 
@@ -148,18 +134,8 @@ function makeMovementAndNewInfo(user, game, movement) {
     let dim_x = user.dim_x;
     let dim_y = user.dim_y;
 
-    if (movement === 'left') {
-        game.position[dim_x] -= 1;
-    }
-    else if (movement === 'right') {
-        game.position[dim_x] += 1;
-    }
-    else if (movement === 'up') {
-        game.position[dim_y] += 1;
-    }
-    else if (movement === 'down') {
-        game.position[dim_y] -= 1;
-    }
+    game.position[dim_x] += movement[0];
+    game.position[dim_y] += movement[1];
 
     for (let index in game.playersIds) {
         let user = users[game.playersIds[index]];
