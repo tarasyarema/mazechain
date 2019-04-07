@@ -1,4 +1,3 @@
-const connection = 'http://localhost:3000/';
 const messages = [
   'left',
   'up',
@@ -7,12 +6,98 @@ const messages = [
 ];
 
 $(function () {
-  let socket = io(connection);
+  $('#makeGame').hide();
+  $('#room').hide();
+  $('#game').hide();
+
+  var socket = io();
+
+
+  // Listeners
+
+  socket.on('setId', function(id) {
+    console.log(`setId: ${id}`);
+    document.cookie = `${id}`;
+  });
+
+  socket.on('addCollab', function(collab) {
+    $('#collaborators_list').append(`<li id="${collab._id}">${collab.name}</li>`);
+  });
+
+  socket.on('removeCollab', function(uid) {
+    console.log(uid);
+    $('#collaborators_list').find(`#${uid}`).remove();
+  });
+
+  socket.on('createGameCallback', function(res) {
+    console.log(res);
+    $('#roomText').text(`Room: ${res._id}`);
+    $('#collaborators_list').append(`<li id="${res.user._id}">${res.user.name}</li>`);
+  });
+
+  socket.on('joinGameCallback', function(res) {
+    if (res) {
+      console.log(res);
+      $('#roomText').text(`Room: ${res._id}`);
+      res.collaborators.forEach(collab => {
+        $('#collaborators_list').append(`<li id="${collab._id}">${collab.name}</li>`);
+      });
+    } else {
+      alert(`No game with ID: ${gameId}`);
+    }
+  });
+
+  socket.on('exitGameCallback', function(res) {
+    console.log(res);
+    $('#collaborators_list').empty();
+  });
+
+
+  // Rooms
+
+  $('#submit').click(function () {
+    const name = $('#name').val();
+    socket.emit('setName', name);
+    $('#login').hide();
+    $('#makeGame').show();
+  });
+
+  $('#create').click(function () {
+    socket.emit('createGame');
+    $('#makeGame').hide();
+    $('#room').show();
+  });
+
+  $('#join').click(function () {
+    const gameId = $('#game_id').val();
+    socket.emit('joinGame', gameId);
+    $('#makeGame').hide();
+    $('#room').show();
+  });
+
+  $('#leave').click(function () {
+    socket.emit('exitGame');
+    $('#collaborators_list').empty();
+    $('#room').hide();
+    $('#makeGame').show();
+
+  });
+
+  $('#start').click(function () {
+    socket.emit('startGame');
+    $('#room').hide();
+    $('#game').show();
+  });
+
+
+  // Game
+
   let mov, message;
-  $('body').append(`<p>Goal: (${level.overall.goal})</p>`);
+
+  $('#game').append(`<p>Goal: (${level.overall.goal})</p>`);
   $('#position').text(`Current overall position: (${level.overall.player})`);
 
-  $("body").keypress(function(event) {
+  $('#game').keypress(function(event) {
     mov = [0, 0];
 
     switch(event.which) {

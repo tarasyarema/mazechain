@@ -8,7 +8,7 @@
             }
             body {
                 background-color: darkred;
-                background-image: "img/out_small.jpeg";
+                background-image: url("img/out_small.jpeg");
                 background-repeat: repeat;
                 min-height: 100%;
                 margin: 0;
@@ -41,42 +41,35 @@
                 font: 48px "Courier New";
                 color: white;
             }
+            li {
+                font: 32px "Courier New";
+                color: white;
+            }
         </style>
         <script src="/socket.io/socket.io.js"></script>
         <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
         <script src="maze.js"></script>
-        <script>
-            // url("https://github.com/tarasyarema/mazechain/blob/master/img/out_small.jpeg?raw=true");
-            $(function () {
-                $('#screen02').hide();
-                var socket = io();
-                socket.on('setId', function(id) {
-                    console.log(`setId: ${id}`);
-                    document.cookie = `${id}`;
-                });
-
-                $('#submit').click(function () {
-                    const name = $('#name').val();
-                    console.log(name);
-                    socket.emit('setName', name);
-                    $('#screen01').hide();
-                    $('#screen02').show();
-                });
-            });
-        </script>
     </head>
     <body>
-        <div id="screen01" class="container">
+        <div id="login" class="container">
             <p class="title">M a z e C h a i n</p>
             <input id="name" type="text" placeholder="nickname">
             <button id="submit">Submit</button>
         </div>
-        <div id="screen02" class="container">
+        <div id="makeGame" class="container">
             <p class="title">M a z e C h a i n</p>
             <p class="info">Join or Create a new game</p>
             <input id="game_id" type="text" placeholder="game id">
             <button id="join">Join</button>
             <button id="create">Create new game</button>
+        </div>
+        <div id="room" class="container">
+            <p class="title">M a z e C h a i n</p>
+            <p id='roomText' class="info">Room:</p>
+            <ul id="collaborators_list">
+            </ul>
+            <button id="start">Start</button>
+            <button id="leave">Leave</button>
         </div>
 
         <div id="game" class="container">

@@ -4,12 +4,9 @@ var http = require('http').Server(app);
 var path = require('path');
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
+var maze = require('./maze');
 
 app.use(express.static(path.join(__dirname, 'static')));
-
-// app.get('/', function(req, res){
-//     res.sendFile('index.html');
-// });
 
 function randomId(checkList) {
     let newId = 0;
@@ -51,42 +48,69 @@ io.on('connection', function(socket) {
     socket.on('createGame', function() {
         console.log('createGame');
         gameId = randomId(games);
-        games[gameId] = [ userId ];
+        games[gameId] = {
+            playersIds: [ userId ]
+        };
         users[userId].gameId = gameId;
+        socket.join(gameId);
+        socket.emit('createGameCallback', {
+            _id: gameId,
+            user: {
+                _id: userId,
+                name: users[userId].name
+            }
+        });
     });
 
     socket.on('joinGame', function(id) {
         console.log(`joinGame: ${id}`);
         if (id in games) {
-            games[id].append(userId);
-            users[userId].gameId = gameId;
+            games[id].playersIds.push(userId);
+            gameId = id;
+            users[userId].gameId = id;
+            socket.to(id).emit('addCollab', {
+                _id: userId,
+                name: users[userId].name
+            });
+            socket.join(id);
+            let collaborators = [];
+            for (const index in games[id].playersIds) {
+                const uid = games[id].playersIds[index];
+                const u = users[uid];
+                collaborators = [ ...collaborators, { _id: u._id, name: u.name }];
+            }
+            socket.emit('joinGameCallback', { _id: id, collaborators: collaborators });
         } else {
-            return false;
+            socket.emit('joinGameCallback', false);
         }
-        return games[id];
     });
 
     socket.on('exitGame', function() {
         console.log('exitGame');
         if (gameId in games) {
             // remove user from game
-            const index = games.indexOf(userId);
+            const index = games[gameId].indexOf(userId);
             if (index > -1) {
-                games.splice(index, 1);
+                games[gameId].splice(index, 1);
             }
+
         }
-        return false;
+        socket.leave(gameId);
+        socket.to(gameId).emit('removeCollab', userId);
+        gameId = 0;
+        users[userId].gameId = 0;
+        socket.emit('exitGameCallback', false);
     });
 
     socket.on('startGame', function() {
-        let game = build_game(T_size, D_dimensions);
-        let gameId = randomId();
-        games[gameId] = game;
+        const D_dimensions = games[gameId].playersIds.length;
+        games[gameId].game = maze.build_game(10, D_dimensions);
         let dim = 0;
-        for (let gameUserId in games[gameId].playersIds) {
+        for (let index in games[gameId].playersIds) {
+            const gameUserId = games[gameId].playersIds[index];
 
             let dim_x = dim % D_dimensions;
-            let dim_y = (dim+1) % D_dimensions;
+            let dim_y = (dim + 1) % D_dimensions;
 
             users[gameUserId].dim_x = dim_x;
             users[gameUserId].dim_y = dim_y;
@@ -152,27 +176,25 @@ function newInfo(user, game) {
     let position = game.position;
     let goal = game.goal;
 
-    let userInfo = {
+    return {
         blocks: game.t,
         dimensions: game.d,
-        map: get_projection(maze, position, dim_x, dim_y),
+        map: maze.get_projection(maze, position, dim_x, dim_y),
         position: [position[dim_x], position[dim_y]],
         goal: {
             position: [goal[dim_x], goal[dim_y]],
-            same_proj: isOnSameProjection(position, goal, dim_x, dim_y)
+            same_proj: isOnSameProjection(position, goal, dim_x, dim_y, game.d)
         },
         overall: {
             player: position,
             goal: goal
         },
         coordinates: [dim_x, dim_y]
-    }
-
-    return userInfo;
+    };
 }
 
-function isOnSameProjection(position, goal, dim_x, dim_y) {
-    for (let i = 0; i < D_dimensions; ++i) {
+function isOnSameProjection(position, goal, dim_x, dim_y, d) {
+    for (let i = 0; i < d; ++i) {
         if (i !== dim_x && i !== dim_y && position[i] !== goal[i])
             return false;
     }
