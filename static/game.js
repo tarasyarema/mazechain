@@ -29,7 +29,7 @@ function draw() {
         // Clear the canvas before redrawing
         //context.clearRect(0, 0, canvas.width, canvas.height);
         const player    = new Image(size_width, size_height);
-        player.src      = 'img/player.jpeg';
+        player.src      = 'img/grass_player.png';
         const grass     = new Image(size_width, size_height);
         grass.src       = 'img/grass.png';
         const block     = new Image(size_width, size_height);
@@ -61,7 +61,7 @@ function draw() {
             if (level.map[level.goal.position[0]][level.goal.position[1]])
                 goal.src = 'img/goal_bo.png';
             else
-                goal.src = 'img/border.jpeg';
+                goal.src = 'img/grass_goal.png';
         }
 
         context.drawImage(goal, level.goal.position[0] * size_width, level.goal.position[1] * size_height, size_width, size_height);

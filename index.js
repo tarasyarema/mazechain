@@ -33,9 +33,9 @@ io.on('connection', function(socket) {
         console.log('disconnect');
         delete userId[userId];
         if (gameId) {
-            const index = games[gameId].indexOf(gameId);
+            const index = games[gameId].playersIds.indexOf(userId);
             if (index > -1) {
-                games.splice(index, 1);
+                games[gameId].playersIds.splice(index, 1);
             }
         }
     });
@@ -89,9 +89,9 @@ io.on('connection', function(socket) {
         console.log('exitGame');
         if (gameId in games) {
             // remove user from game
-            const index = games[gameId].indexOf(userId);
+            const index = games[gameId].playersIds.indexOf(userId);
             if (index > -1) {
-                games[gameId].splice(index, 1);
+                games[gameId].playersIds.splice(index, 1);
             }
 
         }
@@ -103,7 +103,7 @@ io.on('connection', function(socket) {
     });
 
     socket.on('startGame', function() {
-        const D_dimensions = games[gameId].playersIds.length;
+        const D_dimensions = games[gameId].playersIds.length + 1;
         games[gameId].game = maze.build_game(10, D_dimensions);
         let dim = 0;
         for (let index in games[gameId].playersIds) {

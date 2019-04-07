@@ -85,7 +85,7 @@ $(function () {
   });
 
   socket.on('gameStarted', function(initialGame){
-    $('#room').hide()
+    $('#room').hide();
     $('#game').show();
 
     init(initialGame);
@@ -115,7 +115,7 @@ $(function () {
     console.log('Game has started!');
     draw();
     $('#position').text(`Current overall position: (${level.overall.player})`);
-  })
+  });
 
   socket.on('gameUpdated', function(updatedGame){
     init(updatedGame);
