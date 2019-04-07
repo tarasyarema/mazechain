@@ -4,17 +4,17 @@ const context   = canvas.getContext('2d');
 var size_width = 0;
 var size_height = 0;
 
+let level;
+
 function draw() {
     // Clear the canvas before redrawing
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    //context.clearRect(0, 0, canvas.width, canvas.height);
     const player    = new Image(size_width, size_height);
     player.src      = 'img/player.jpeg'; 
     const grass     = new Image(size_width, size_height);
     grass.src       = 'img/grass.png'; 
     const block     = new Image(size_width, size_height);
     block.src       = 'img/block.png'; 
-
-    
 
     // Draw the 2D maze
     for (let i = 0; i < level.blocks; ++i)
@@ -51,28 +51,12 @@ function draw() {
     // context.fillStyle = 'rgb(40, 0, 150)';
     context.drawImage(player, level.position[0] * size_width, level.position[1] * size_height, size_width, size_height);
     // context.fillRect(level.position[0] * size_width, level.position[1] * size_height, size_width, size_height);
+    console.log("end draw()");
+    requestAnimationFrame(draw);
 }
-
-var now, delta;
-var then            = Date.now();
-const fps           = 60;
-const interval      = 1000 / fps;
 
 function init(lvl) {
     level = lvl;
     size_width    = canvas.width  / level.blocks;
     size_height   = canvas.height / level.blocks;
-    loop();
-}
-
-function loop() {
-    requestAnimationFrame(loop);
-
-    now     = Date.now();
-    delta   = now - then;
-     
-    if (delta > interval) {
-        then = now - (delta % interval);
-        draw();
-    }
 }

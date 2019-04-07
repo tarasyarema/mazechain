@@ -11,7 +11,7 @@ app.use(express.static(path.join(__dirname, 'static')));
 function randomId(checkList) {
     let newId = 0;
     do {
-        newId = Date.now();
+        newId = Math.floor(Math.random()*1000);
     } while (newId in checkList);
     return newId;
 }
@@ -119,21 +119,13 @@ io.on('connection', function(socket) {
 
             let userSocket = gameUser.socket;
             let userInfo = newInfo(gameUser, games[gameId].game);
-            userSocket.emit('new info', userInfo);
+            userSocket.emit('gameStarted', userInfo);
             ++dim;
         }
     });
 
     socket.on('movement', function(movement){
-        console.log(`index.js games: ${games}`); 
-        for (var key in games) {
-            if (games.hasOwnProperty(key)) {
-                console.log(key + " -> " + games[key]);
-            }
-        }
-        
-
-        makeMovementAndNewInfo(users[userId], games[gameId].game, movement);
+        makeMovementAndNewInfo(users[userId], games[gameId], movement);
     });
 
 });
@@ -142,15 +134,14 @@ function makeMovementAndNewInfo(user, game, movement) {
     let dim_x = user.dim_x;
     let dim_y = user.dim_y;
 
-    console.log(game);
-    game.position[dim_x] += movement[0];
-    game.position[dim_y] += movement[1];
+    game.game.position[dim_x] += movement[0];
+    game.game.position[dim_y] += movement[1];
 
     for (let index in game.playersIds) {
         let user = users[game.playersIds[index]];
         let userSocket = user.socket;
-        let userInfo = newInfo(user, game);
-        userSocket.emit('new info', userInfo);
+        let userInfo = newInfo(user, game.game);
+        userSocket.emit('gameUpdated', userInfo);
     }
 }
 

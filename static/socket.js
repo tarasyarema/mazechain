@@ -4,7 +4,6 @@ $(function () {
   $('#game').hide();
 
   var socket = io();
-  let level;
 
   // Listeners
 
@@ -78,14 +77,18 @@ $(function () {
 
   $('#start').click(function () {
     socket.emit('startGame');
-    $('#room').hide();
-    $('#game').show();
 
     // if (level != undefined) {
     //   $('#game').append(`<p class="position">Goal: <b>(${level.overall.goal})</b></p>`);
     //   $('#position').text(`Current overall position: <b>(${level.overall.player})</b>`);
     // }
+  });
 
+  socket.on('gameStarted', function(initialGame){
+    $('#room').hide()
+    $('#game').show();
+
+    init(initialGame);
     $('body').keypress(function(event) {
       let mov = [0, 0];
 
@@ -103,22 +106,23 @@ $(function () {
           mov = [0, 1];
           break;
       }
-      
-      // if (level != undefined)
+
       if (can_move(level.position, mov, level.map)) {
-        console.log(`Socket.js: ${mov}`);
         socket.emit('movement', mov);
-        level.position = vec_sum(level.position, mov);
-        vec_sum_coord(level.coordinates, level.overall.player, mov);
+        // level.position = vec_sum(level.position, mov);
+        // vec_sum_coord(level.coordinates, level.overall.player, mov);
       }
     });
-  });
 
-  socket.on('new info', function(msg){
-    console.log('New info:');
-    level = msg;
-    console.log(level);
-    init(level);
-    $('#position').text(`Current overall position: (${level.overall.player})`);
+    console.log('Game has started!');
+    draw();
+    //$('#position').text(`Current overall position: (${level.overall.player})`);
+  })
+
+  socket.on('gameUpdated', function(updatedGame){
+    init(updatedGame);
+    console.log('game update");
+    draw();
+    //$('#position').text(`Current overall position: (${level.overall.player})`);
   });
 });
